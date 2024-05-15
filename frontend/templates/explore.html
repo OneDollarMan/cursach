@@ -1,0 +1,29 @@
+{% import 'base/macro.html' as macro %}
+{% extends "base/base.html" %}
+{% block header %}
+    {{ macro.logged_header(username=user['email']) }}
+{% endblock %}
+
+{% block content %}
+<div class="container d-flex flex-wrap">
+    {% for user in users if user['subscription_levels']|length > 0 %}
+    <div class="card me-2 mb-2" style="width: 33%;">
+        <div class="card-body">
+            <h5 class="card-title">{{user['first_name']}} {{user['last_name']}}</h5>
+            <p class="card-text">
+                Описание тут будет
+            </p>
+            <form onSubmit="subscribeUser(event)" class="d-flex">
+                <input type="hidden" name="author_id" value="{{user['id']}}">
+                <button type="submit" class="btn btn-primary me-2">Подписаться</button>
+                <select class="form-select" name="subscription_level_id">
+                    {% for sub_lvl in user['subscription_levels'] %}
+                    <option value="{{sub_lvl.id}}">{{sub_lvl.title}}</option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

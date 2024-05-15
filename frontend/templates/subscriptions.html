@@ -1,0 +1,20 @@
+{% import 'base/macro.html' as macro %}
+{% extends "base/base.html" %}
+{% block header %}
+    {{ macro.logged_header(username=user['email']) }}
+{% endblock %}
+
+{% block content %}
+<div class="container d-flex flex-wrap">
+{% for subscription in subscriptions %}
+    <div class="card me-2 mb-2" style="width: 33%;">
+        <div class="card-body">
+            <h5 class="card-title">{{subscription.author['first_name']}} {{subscription.author['last_name']}}</h5>
+            <p class="card-text">
+                {{subscription.subscription_level.title}}
+            </p>
+        </div>
+    </div>
+{% endfor %}
+</div>
+{% endblock %}

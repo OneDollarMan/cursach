@@ -1,0 +1,78 @@
+{% import 'base/macro.html' as macro %}
+{% extends "base/base.html" %}
+{% block header %}
+    {{ macro.logged_header(username=user['email']) }}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">Ваши данные</h5>
+            <div class="mb-3">
+                <label for="email" class="form-label">Почта</label>
+                <input disabled type="text" class="form-control" id="email" placeholder="Почта" value="{{user.email}}">
+            </div>
+            <div class="mb-3">
+                <label for="firstName" class="form-label">Имя</label>
+                <input disabled type="text" class="form-control" id="firstName" placeholder="Введите имя" value="{{user.first_name}}">
+            </div>
+            <div class="mb-3">
+                <label for="lastName" class="form-label">Фамилия</label>
+                <input disabled type="text" class="form-control" id="lastName" placeholder="{{user.last_name}}">
+            </div>
+            <div class="mb-3">
+                <label for="lastName" class="form-label">Количество записей</label>
+                <input disabled type="text" class="form-control" placeholder="{{user.last_name}}">
+            </div>
+        </div>
+    </div>
+    <div class="d-flex">
+        <div class="card me-3">
+            <div class="card-body">
+                <h5 class="card-title">Добавить уровень подписки</h5>
+                <form onSubmit="addSubscriptionLevel(event)">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" name="title" placeholder="Название">
+                    </div>
+                    <div class="mb-3">
+                        <input type="checkbox" name="is_chat_available" id="is_chat_available">
+                        <label for="is_chat_available">Доступ к чату</label><br>
+                    </div>
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">Добавить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Ваши уровни подписки</h5>
+            {% if user['subscription_levels']|length > 0 %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Название</th>
+                        <th>Доступ к чату</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for sub_lvl in user['subscription_levels'] %}
+                    <tr>
+                        <td>{{sub_lvl.id}}</td>
+                        <td>{{sub_lvl.title}}</td>
+                        <td>{{sub_lvl.is_chat_available}}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            Уровней нет
+            {% endif %}
+        </div>
+    </div>
+    </div>
+
+</div>
+{% endblock %}

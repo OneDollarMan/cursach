@@ -1,0 +1,9 @@
+{% import 'base/macro.html' as macro %}
+{% extends "base/base.html" %}
+{% block header %}
+    {{ macro.logged_header(username=user['email']) }}
+{% endblock %}
+
+{% block content %}
+Feed
+{% endblock %}

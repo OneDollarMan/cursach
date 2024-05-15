@@ -1,0 +1,46 @@
+{% import 'base/macro.html' as macro %}
+{% extends "base/base.html" %}
+{% block header %}
+    {{ macro.logged_header(username=user['email']) }}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex">
+        <div class="card me-3">
+            <div class="card-body">
+                <h5 class="card-title">Добавить запись</h5>
+                <form onSubmit="addArticle(event)">
+                    <div class="mb-3">
+                        <input type="text" class="form-control" name="title" placeholder="Название">
+                    </div>
+                    <div class="mb-3">
+                        <textarea class="form-control" name="content" id="content" placeholder="Контент"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <select class="form-select" name="subscription_level_id">
+                            {% for sub_lvl in user['subscription_levels'] %}
+                            <option value="{{sub_lvl.id}}">{{sub_lvl.title}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">Добавить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div style="width: 100%">
+            <h1>Записи</h1>
+            {% for article in articles %}
+                <div class="card m-3">
+                    <div class="card-body">
+                        <h5 class="card-title">{{article.title}}</h5>
+                        {{article.content}}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
