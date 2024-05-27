@@ -1,20 +1,27 @@
 {% import 'base/macro.html' as macro %}
 {% extends "base/base.html" %}
 {% block header %}
-    {{ macro.logged_header(username=user['email']) }}
+{{ macro.logged_header(username=user['email']) }}
 {% endblock %}
 
 {% block content %}
-<div class="container d-flex flex-wrap">
-{% for subscription in subscriptions %}
-    <div class="card me-2 mb-2" style="width: 33%;">
-        <div class="card-body">
-            <h5 class="card-title">{{subscription.author['first_name']}} {{subscription.author['last_name']}}</h5>
-            <p class="card-text">
-                {{subscription.subscription_level.title}}
-            </p>
+<div class="container">
+    <h1>Ваши подписки</h1>
+    <div class="d-flex flex-wrap">
+        {% for subscription in subscriptions %}
+        <div class="card me-2 mb-2" style="width: 20%;">
+            <div class="card-body">
+                <h5 class="card-title"><a href="/articles/{{subscription.author.id}}">{{subscription.author.first_name}}
+                        {{subscription.author.last_name}}</a></h5>
+                <p class="card-text">
+                    Уровень подписки: <b>{{subscription.subscription_level.title}}</b>
+                </p>
+                <button class="btn btn-outline-danger" onClick="unsubscribeUser({{subscription.author.id}})">
+                    Отписаться
+                </button>
+            </div>
         </div>
+        {% endfor %}
     </div>
-{% endfor %}
 </div>
 {% endblock %}

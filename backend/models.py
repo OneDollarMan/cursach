@@ -10,6 +10,8 @@ class Base(DeclarativeBase):
 class User(SQLAlchemyBaseUserTableUUID, Base):
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
+    passport = Column(String, nullable=False)
+    description = Column(String)
 
     subscription_levels = relationship('SubscriptionLevel', back_populates='author', lazy='selectin')
     #subscriptions = relationship('Subscription', back_populates='subscriber', lazy='selectin')

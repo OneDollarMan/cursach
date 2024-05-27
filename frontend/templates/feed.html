@@ -1,9 +1,24 @@
 {% import 'base/macro.html' as macro %}
 {% extends "base/base.html" %}
 {% block header %}
-    {{ macro.logged_header(username=user['email']) }}
+{{ macro.logged_header(username=user['email']) }}
 {% endblock %}
 
 {% block content %}
-Feed
+<div class="container">
+    <h1>Ваша лента</h1>
+    {% for article in articles %}
+    <div class="card mb-3">
+        <div class="card-header d-flex justify-content-between">
+            <a href="/articles/{{article.author.id}}" >{{article.author.first_name}} {{article.author.last_name}}</a>
+            {{article.created_at}}
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">{{article.title}}</h5>
+            {{article.content}}
+        </div>
+    </div>
+    {% endfor %}
+
+</div>
 {% endblock %}

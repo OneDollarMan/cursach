@@ -1,3 +1,11 @@
+function openModal(id) {
+    document.getElementById(id).style.display = "block";
+}
+
+function closeModal(id) {
+    document.getElementById(id).style.display = "none";
+}
+
 async function loginUser() {
     var params = new URLSearchParams();
     params.set('username', document.getElementById('loginEmail').value);
@@ -20,6 +28,7 @@ async function registerUser() {
         email: document.getElementById('email').value,
         first_name: document.getElementById('firstName').value,
         last_name: document.getElementById('lastName').value,
+        passport: document.getElementById('passport').value,
         password: document.getElementById('password').value,
     }
 
@@ -32,7 +41,8 @@ async function registerUser() {
     })
 
     if(res.ok) {
-
+        closeModal('modalSignup');
+        openModal('modalSignin');
     }
 }
 
@@ -42,6 +52,29 @@ async function logoutUser() {
     })
     if(res.ok) {
         window.location.replace("/");
+    }
+}
+
+async function updateUser(event) {
+    console.log(event)
+    event.preventDefault()
+    const formData = new FormData(event.target);
+    data = {
+        first_name: formData.get('firstName'),
+        last_name: formData.get('lastName'),
+        passport: formData.get('passport'),
+        description: formData.get('description')
+    }
+
+    const res = await fetch('/api/users/me', {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    if(res.ok) {
+        window.location.replace("/profile");
     }
 }
 
@@ -61,27 +94,19 @@ async function subscribeUser(event) {
         body: JSON.stringify(data)
     })
     if(res.ok) {
-
+        location.reload()
     }
 }
 
-async function unsubscribeUser(event) {
-    event.preventDefault()
-    const formData = new FormData(event.target);
-    data = {
-        author_id: formData.get('author_id'),
-        subscription_level_id: formData.get('subscription_level_id')
-    }
-
-    const res = await fetch('/api/unsubscribe', {
+async function unsubscribeUser(author_id) {
+    const res = await fetch('/api/unsubscribe/' + author_id, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify(data)
     })
     if(res.ok) {
-
+        window.location.replace("/subscriptions");
     }
 }
 
@@ -108,6 +133,18 @@ async function addSubscriptionLevel(event) {
     }
 }
 
+async function deleteSubscriptionLevel(id) {
+    const res = await fetch('/api/subscription_levels/' + id, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        },
+    })
+    if(res.ok) {
+        window.location.replace("/profile");
+    }
+}
+
 async function addArticle(event) {
     event.preventDefault()
     const formData = new FormData(event.target);
@@ -123,6 +160,18 @@ async function addArticle(event) {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(data)
+    })
+    if(res.ok) {
+        window.location.replace("/articles");
+    }
+}
+
+async function deleteArticle(id) {
+    const res = await fetch('/api/articles/' + id, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        },
     })
     if(res.ok) {
         window.location.replace("/articles");

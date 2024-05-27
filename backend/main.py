@@ -1,3 +1,4 @@
+import uuid
 from typing import List
 from fastapi import FastAPI, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -6,7 +7,7 @@ from db import create_db_and_tables, get_async_session
 from models import User
 import service, schemas
 
-app = FastAPI(docs_url="/api/docs")
+app = FastAPI(docs_url="/api/docs", openapi_url="/api/openapi.json")
 
 
 app.include_router(
@@ -44,6 +45,11 @@ async def explore(user: User = Depends(current_active_user), s: AsyncSession = D
     return await service.get_all_users(s)
 
 
+@app.get('/api/author_info/{id}', response_model=schemas.UserReadSubscriptionLevels, tags=['users'])
+async def explore(id: uuid.UUID, user: User = Depends(current_active_user), s: AsyncSession = Depends(get_async_session)):
+    return await service.get_author_info(id, user, s)
+
+
 @app.get('/api/subscriptions', response_model=List[schemas.SubscriptionRead], tags=['subscriptions'])
 async def explore(user: User = Depends(current_active_user), s: AsyncSession = Depends(get_async_session)):
     return await service.get_user_subscriptions(user, s)
@@ -54,9 +60,9 @@ async def post_subscribe(subscription: schemas.SubscriptionCreate, user: User = 
     return await service.subscribe(subscription, user, s)
 
 
-@app.post("/api/unsubscribe", response_model=schemas.SubscriptionRead, tags=['subscriptions'])
-async def post_unsubscribe(subscription: schemas.SubscriptionCreate, user: User = Depends(current_active_user), s: AsyncSession = Depends(get_async_session)):
-    return await service.unsubscribe(subscription, user, s)
+@app.post("/api/unsubscribe/{author_id}", tags=['subscriptions'])
+async def post_unsubscribe(author_id: uuid.UUID, user: User = Depends(current_active_user), s: AsyncSession = Depends(get_async_session)):
+    return await service.unsubscribe(author_id, user, s)
 
 
 @app.get("/api/subscription_levels", response_model=List[schemas.SubscriptionLevelRead], tags=['subscription_levels'])
@@ -90,8 +96,18 @@ async def get_articles(user: User = Depends(current_active_user), s: AsyncSessio
 
 
 @app.get("/api/user_articles", response_model=List[schemas.ArticleRead], tags=['articles'])
-async def get_articles(user: User = Depends(current_active_user), s: AsyncSession = Depends(get_async_session)):
+async def get_user_articles(user: User = Depends(current_active_user), s: AsyncSession = Depends(get_async_session)):
     return await service.get_user_articles(user, s)
+
+
+@app.get("/api/author_articles", response_model=List[schemas.ArticleRead], tags=['articles'])
+async def get_all_authors_articles(user: User = Depends(current_active_user), s: AsyncSession = Depends(get_async_session)):
+    return await service.get_all_authors_articles(user, s)
+
+
+@app.get("/api/author_articles/{author_id}", response_model=List[schemas.ArticleRead], tags=['articles'])
+async def get_author_articles(author_id: uuid.UUID, user: User = Depends(current_active_user), s: AsyncSession = Depends(get_async_session)):
+    return await service.get_author_articles(author_id, user, s)
 
 
 @app.post("/api/articles", response_model=schemas.ArticleRead, tags=['articles'])

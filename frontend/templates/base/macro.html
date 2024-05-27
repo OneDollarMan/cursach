@@ -19,3 +19,26 @@
     </header>
 </div>
 {% endmacro %}
+
+{% macro modal(id, query_method, title, button_text, inputs) %}
+<div class="modal modal-signin position-absolute bg-secondary py-5" tabindex="-1" role="dialog" id="{{id}}">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content rounded-4 shadow">
+      <div class="modal-header p-5 pb-4 border-bottom-0">
+        <h1 class="fw-bold mb-0 fs-2">{{title}}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="closeModal('{{id}}')"></button>
+      </div>
+
+      <div class="modal-body p-5 pt-0">
+          {% for k, v in inputs.items() %}
+              <div class="form-floating mb-3">
+                  <input type="{{k}}" class="form-control rounded-3" id="{{k}}" placeholder="{{v}}">
+                  <label for="{{k}}">{{v}}</label>
+              </div>
+          {% endfor %}
+          <button class="w-100 mb-2 btn btn-lg rounded-3 btn-primary" type="submit" onclick="{{query_method}}">{{button_text}}</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endmacro %}

@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 from fastapi_users import schemas
 from pydantic import BaseModel, ConfigDict
@@ -10,16 +10,21 @@ class UserRead(schemas.BaseUser[uuid.UUID]):
     model_config = ConfigDict(from_attributes=True)
     first_name: str
     last_name: str
+    passport: str
+    description: Optional[str]
 
 
 class UserCreate(schemas.BaseUserCreate):
     first_name: str
     last_name: str
+    passport: str
 
 
 class UserUpdate(schemas.BaseUserUpdate):
     first_name: str
     last_name: str
+    passport: str
+    description: str
 
 
 class SubscriptionLevelRead(BaseModel):
@@ -34,6 +39,8 @@ class UserReadSubscriptionLevels(schemas.BaseUser[uuid.UUID]):
     model_config = ConfigDict(from_attributes=True)
     first_name: str
     last_name: str
+    passport: str
+    description: Optional[str]
     subscription_levels: List[SubscriptionLevelRead]
 
 
@@ -73,6 +80,8 @@ class ArticleRead(BaseModel):
     created_by: uuid.UUID
     created_at: datetime
     subscription_level_id: int
+    author: UserRead
+    subscription_level: SubscriptionLevelRead
 
 
 class ArticleCreate(BaseModel):
